@@ -1,0 +1,28 @@
+{
+  "name": "simassan",
+  "version": "0.0.1",
+  "description": "A simple Node Telegram bot built on Express, instantly up and running.",
+  "main": "index.js",
+  "scripts": {
+    "start": "micro -l tcp://0.0.0.0:${PORT-3000}"
+  },
+  "dependencies": {
+    "micro": "^9.3.4",
+    "got": "^9.6.0",
+    "telegraf": "^3.32.0",
+    "express": "^4.16.4"
+  },
+  "engines": {
+    "node": "11.x"
+  },
+  "repository": {
+    "url": "https://glitch.com/edit/#!/simassan"
+  },
+  "author": "vihainen",
+  "license": "MIT",
+  "keywords": [
+    "node",
+    "glitch",
+    "express"
+  ]
+}
