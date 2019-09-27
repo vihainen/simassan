@@ -1,9 +1,18 @@
 const got = require('got')
 const default_to = 'brl'
 
-let cached = []
+let cached = {}
+async function checkCodes(...codes) {
+  if (!cached.codes) {
+    const url = `https://free.currconv.com/api/v7/currencies?apiKey=${process.env.MONEY_KEY}`
+    cached.codes = Object.keys((await got(url, { json: true })).body.results)
+  }
+
+  return codes.every(code => cached.codes.includes(code))
+}
+
 async function getRatio(curr) {
-  if (cached[curr] === undefined) {
+  if (!cached[curr]) {
     const url = `https://free.currconv.com/api/v7/convert?q=${curr}&compact=ultra&apiKey=${process.env.MONEY_KEY}`
     cached[curr] = (await got(url, { json: true })).body[curr]
   }
@@ -23,12 +32,14 @@ async function parse(text) {
   let match
   while ((match = pattern.exec(text)) !== null) {
     const value = +match[1]
-    const from = match[2]
-    const to = match[3] || default_to
+    const from = match[2].toUpperCase()
+    const to = (match[3] || default_to).toUpperCase()
 
-    const ratio = await getRatio(`${from}_${to}`.toUpperCase())
-    
-    matches.push(view(from, to, value, ratio))
+    if (await checkCodes(from, to)) {
+      const ratio = await getRatio(`${from}_${to}`)
+     
+      matches.push(view(from, to, value, ratio))
+    }
   }
 
   return matches
