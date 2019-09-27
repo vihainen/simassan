@@ -1,4 +1,5 @@
 const got = require('got')
+const default_to = 'brl'
 
 let cached = []
 async function getConv(curr) {
@@ -11,7 +12,7 @@ async function getConv(curr) {
 }
 
 function view(from, to, value, ratio) {
-  if (ratio === undefined) return ['error', `Check if ${from} and ${to} are valid currencies.`]
+  if (ratio === undefined) return ['error', `Check if ${from} ${to != default_to? `and ${to} are valid currencies.` : 'is a valid currency.'}`]
   else return [`${value} ${from}`, `${(value*ratio).toFixed(2)} ${to}`]
 }
 
@@ -23,7 +24,7 @@ async function parse(text) {
 	while ((match = pattern.exec(text)) !== null) {
 		const value = +match[1]
     const from = match[2]
-    const to = match[3] || 'brl'
+    const to = match[3] || default_to
 
     const ratio = await getConv(`${from}_${to}`.toUpperCase())
     
