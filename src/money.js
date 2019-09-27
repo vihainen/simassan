@@ -2,7 +2,7 @@ const got = require('got')
 const default_to = 'brl'
 
 let cached = []
-async function getConv(curr) {
+async function getRatio(curr) {
   if (cached[curr] === undefined) {
     const url = `https://free.currconv.com/api/v7/convert?q=${curr}&compact=ultra&apiKey=${process.env.MONEY_KEY}`
     cached[curr] = (await got(url, { json: true })).body[curr]
@@ -26,7 +26,7 @@ async function parse(text) {
     const from = match[2]
     const to = match[3] || default_to
 
-    const ratio = await getConv(`${from}_${to}`.toUpperCase())
+    const ratio = await getRatio(`${from}_${to}`.toUpperCase())
     
     matches.push(view(from, to, value, ratio))
   }
@@ -35,4 +35,4 @@ async function parse(text) {
 }
 
 module.exports = parse
-module.exports.getConv = getConv
+module.exports.getRatio = getRatio
