@@ -17,7 +17,7 @@ function view(from, to, value, ratio) {
 }
 
 async function parse(text) {
-  const pattern = /(\d*[,.]?\d+)\s(\w{3})(?:\sto\s(\w{3})(?:[\W]|$))?/gi
+  const pattern = /(\d*[,.]?\d+)\s(\w{3})(?:\sto\s(\w{3}))?(?:[\W]|$)/gi
 
   const matches = []
   let match
