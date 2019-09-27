@@ -20,10 +20,7 @@ async function getRatio(curr) {
   return cached[curr]
 }
 
-function view(from, to, value, ratio) {
-  if (ratio === undefined) return ['error', `Check if ${from} ${to != default_to? `and ${to} are valid currencies.` : 'is a valid currency.'}`]
-  else return [`${value} ${from}`, `${(value*ratio).toFixed(2)} ${to}`]
-}
+const view = (from, to, value, ratio) => [`${value} ${from}`, `${(value*ratio).toFixed(2)} ${to}`]
 
 async function parse(text) {
   const pattern = /(\d*[,.]?\d+)\s(\w{3})(?:\sto\s(\w{3}))?(?:[\W]|$)/gi
@@ -46,4 +43,5 @@ async function parse(text) {
 }
 
 module.exports = parse
+module.exports.checkCodes = checkCodes
 module.exports.getRatio = getRatio
