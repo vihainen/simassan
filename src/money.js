@@ -32,10 +32,14 @@ async function parse(text) {
     const from = match[2].toUpperCase()
     const to = (match[3] || default_to).toUpperCase()
 
-    if (await checkCodes(from, to)) {
-      const ratio = await getRatio(`${from}_${to}`)
-     
-      matches.push(view(from, to, value, ratio))
+    try {
+      if (await checkCodes(from, to)) {
+        const ratio = await getRatio(`${from}_${to}`)
+
+        matches.push(view(from, to, value, ratio))
+      }
+    } catch (error) {
+      console.error(error)
     }
   }
 
