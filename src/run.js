@@ -1,4 +1,5 @@
 const money = require('./money')
+const picker = require('./picker')
 
 function parserRunner(text) {
   return async parser => {
@@ -12,7 +13,7 @@ function parserRunner(text) {
 
 async function run({ text }) {
   const runner = parserRunner(text)
-  const parsers = [money]
+  const parsers = [money, picker]
   const promisedResults = parsers.map(runner)
   const results = await Promise.all(promisedResults)
 
