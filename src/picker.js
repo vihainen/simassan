@@ -12,10 +12,8 @@ async function parse(text) {
       const weight = +match[1]||1
       const opt = match[2]||match[3]
       opts = [...opts, ...Array(weight).fill(opt)]
-      console.log(weight, opt)
     }
-    
-    console.log(opts)
+
     matches.push(['pick', opts[Math.floor(Math.random()*opts.length)]])
     
     match = ''
