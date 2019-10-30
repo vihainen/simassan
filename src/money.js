@@ -15,42 +15,49 @@ async function listCodes(text) {
   if ((match = pattern.exec(text)) !== null) {
     try {
       if (!cached.codes) await initCache()
-    
-      const from = match[0]
-      const to = 'Currently, I support using the following currencies:\n<code>' + cached.codes.reduce((acc, curr) => {
-        if(acc.length && acc[acc.length - 1].length <= 5*4) acc[acc.length - 1] = `${acc[acc.length - 1]}, ${curr}`
-        else acc.push(curr)
 
-        return acc
-      }, []).join('\n') + '</code>'
+      const from = match[0]
+      const to =
+        'Currently, I support using the following currencies:\n<code>' +
+        cached.codes
+          .reduce((acc, curr) => {
+            if (acc.length && acc[acc.length - 1].length <= 5 * 4)
+              acc[acc.length - 1] = `${acc[acc.length - 1]}, ${curr}`
+            else acc.push(curr)
+
+            return acc
+          }, [])
+          .join('\n') +
+        '</code>'
 
       result.push([from, to, 'PM'])
     } catch (error) {
       result.push(['money.js@listCodes', JSON.stringify(error), 'ERR'])
     }
   }
-  
+
   return result
 }
 
 async function queryCurrency(text) {
   const pattern = /def\|(\w{3})(?:[\W]|$)/gi
-  
+
   const matches = []
   for (let match of text.matchAll(pattern)) {
     const from = match[1].toUpperCase()
     try {
       if (await checkCodes(from)) {
         const info = cached.info[from]
-        const to = `${info.currencyName}, ${info.currencySymbol||'symbol not found.'}`
-        
+        const to = `${info.currencyName}, ${info.currencySymbol ||
+          'symbol not found.'}`
+
         matches.push([from, to])
       }
     } catch (error) {
       matches.push(['money.js@queryCurrency', JSON.stringify(error), 'ERR'])
     }
   }
-  
+
   return matches
 }
 
@@ -69,7 +76,10 @@ async function getRatio(curr) {
   return cached[curr]
 }
 
-const view = (from, to, value, ratio) => [`${value} ${from}`, `${(value*ratio).toFixed(2)} ${to}`]
+const view = (from, to, value, ratio) => [
+  `${value} ${from}`,
+  `${(value * ratio).toFixed(2)} ${to}`
+]
 
 async function convert(text) {
   const pattern = /(\d*[,.]?\d+)\s(\w{3})(?:\sto\s(\w{3}))?(?:[\W]|$)/gi

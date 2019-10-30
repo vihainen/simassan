@@ -7,12 +7,11 @@ const run = require('./src/run')
 
 const telegram = new Telegram(process.env.BOT_KEY)
 function reply(chat, message_id, text) {
-  if (process.env.DEBUG !== undefined)
-    console.log({ text })
+  if (process.env.DEBUG !== undefined) console.log({ text })
   else
     telegram.sendMessage(chat, text, {
       reply_to_message_id: message_id,
-      parse_mode: 'HTML' 
+      parse_mode: 'HTML'
     })
 }
 
@@ -22,7 +21,10 @@ function view(from, to) {
 
 function sendPM(user, message_id, from, to) {
   telegram.sendMessage(user, to, { parse_mode: 'HTML' })
-  return view(from, 'I have sent you the requested information in a private message.')
+  return view(
+    from,
+    'I have sent you the requested information in a private message.'
+  )
 }
 
 function sendError(data, error) {
@@ -30,8 +32,8 @@ function sendError(data, error) {
 }
 
 function getResponses(message) {
-  return function ([from, to, type = 'MSG']) {
-    switch(type) {
+  return function([from, to, type = 'MSG']) {
+    switch (type) {
       case 'PM':
         return sendPM(message.from.id, message.message_id, from, to)
       case 'ERR':

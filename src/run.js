@@ -6,7 +6,10 @@ function parserRunner(text) {
     try {
       return await parser(text)
     } catch (error) {
-      return [['error', 'An error occurred when handling the request.'], ['run.js', JSON.stringify(error), 'ERR']]
+      return [
+        ['error', 'An error occurred when handling the request.'],
+        ['run.js', JSON.stringify(error), 'ERR']
+      ]
     }
   }
 }
