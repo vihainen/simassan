@@ -37,8 +37,7 @@ async function queryCurrency(text) {
   const pattern = /def\|(\w{3})(?:[\W]|$)/gi
   
   const matches = []
-  let match
-  while((match = pattern.exec(text)) !== null) {
+  for (let match of text.matchAll(pattern)) {
     const from = match[1].toUpperCase()
     try {
       if (await checkCodes(from)) {
@@ -76,8 +75,7 @@ async function convert(text) {
   const pattern = /(\d*[,.]?\d+)\s(\w{3})(?:\sto\s(\w{3}))?(?:[\W]|$)/gi
 
   const matches = []
-  let match
-  while ((match = pattern.exec(text)) !== null) {
+  for (let match of text.matchAll(pattern)) {
     const value = +match[1]
     const from = match[2].toUpperCase()
     const to = (match[3] || default_to).toUpperCase()
