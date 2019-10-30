@@ -7,7 +7,7 @@ async function parse(text) {
     const param = match[1].trim()
     
     let opts = []
-    for (let match of text.matchAll(pattern)) {
+    for (let match of param.matchAll(pattern)) {
       const weight = +match[1]||1
       const opt = match[2]||match[3]
       opts = [...opts, ...Array(weight).fill(opt)]
