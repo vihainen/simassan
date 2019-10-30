@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const Telegram = require('telegraf/telegram')
 const { json } = require('micro')
 
@@ -5,10 +7,13 @@ const run = require('./src/run')
 
 const telegram = new Telegram(process.env.BOT_KEY)
 function reply(chat, message_id, text) {
-  telegram.sendMessage(chat, text, {
-    reply_to_message_id: message_id,
-    parse_mode: 'HTML' 
-  })
+  if (process.env.DEBUG !== undefined)
+    console.log({ text })
+  else
+    telegram.sendMessage(chat, text, {
+      reply_to_message_id: message_id,
+      parse_mode: 'HTML' 
+    })
 }
 
 function view(from, to) {
