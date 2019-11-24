@@ -6,8 +6,7 @@ const run = require('./src/run')
 const telegram = new Telegram(process.env.BOT_KEY)
 function reply(chat, message_id, text) {
   telegram.sendMessage(chat, text, {
-    reply_to_message_id: message_id,
-    parse_mode: 'HTML' 
+    reply_to_message_id: message_id
   })
 }
 
@@ -16,7 +15,7 @@ function view(from, to) {
 }
 
 function sendPM(user, message_id, from, to) {
-  telegram.sendMessage(user, to, { parse_mode: 'HTML' })
+  telegram.sendMessage(user, to)
   return view(from, 'I have sent you the requested information in a private message.')
 }
 
