@@ -15,7 +15,7 @@ async function parse(text) {
       opts = [...opts, [max, opt]]
     }
     
-    matches.push(['pick', opts.find(opt => opt[0] > Math.floor(Math.random()*max))[1]])
+    matches.push(['pick', opts.find(opt => opt[0] > (Math.floor(Math.random()*max) + 1))[1]])
     
     match = ''
   }
