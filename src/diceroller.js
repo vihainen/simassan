@@ -25,7 +25,6 @@ function getRolls(op, n, min, max) {
     case '<': result = getOpText(rolls.reduce((min, roll) => (roll < min)? roll : min, rolls[0]), op, result); break
     case '~': result = getOpText(Math.round(rolls.reduce((sum, roll) => sum + roll)/rolls.length), op, result); break
   }
-      console.log([getRolledDices(op, n, min, max), result])
   
   return [getRolledDices(op, n, min, max), result]
 }
