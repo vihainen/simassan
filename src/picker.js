@@ -14,8 +14,9 @@ async function parse(text) {
       const opt = match[2]||match[3]
       opts = [...opts, [max, opt]]
     }
+    const pick = (Math.floor(Math.random()*max) + 1)
     
-    matches.push(['pick', opts.find(opt => opt[0] > (Math.floor(Math.random()*max) + 1))[1]])
+    matches.push(['pick', opts.find(opt => opt[0] >= pick)[1]])
     
     match = ''
   }
