@@ -4,7 +4,7 @@
   "description": "A simple Node Telegram bot built on Express, instantly up and running.",
   "main": "index.js",
   "scripts": {
-    "start": "micro -l tcp://0.0.0.0:${PORT-3000}"
+    "start": "micro -l tcp://0.0.0.0:3000"
   },
   "dependencies": {
     "express": "^4.17.1",
