@@ -4,8 +4,13 @@ const default_to = 'brl'
 let cached = {}
 async function initCache() {
   const url = `https://free.currconv.com/api/v7/currencies?apiKey=${process.env.MONEY_KEY}`
-  cached.info = (await got(url, { json: true })).body.results
-  cached.codes = Object.keys(cached.info)
+  try {
+    const { results } = JSON.parse((await got(url)).body)
+    cached.info = results
+    cached.codes = Object.keys(cached.info)
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 async function listCodes(text) {
@@ -17,16 +22,16 @@ async function listCodes(text) {
       if (!cached.codes) await initCache()
     
       const from = match[0]
-      const to = 'Currently, I support using the following currencies:\n<code>' + cached.codes.reduce((acc, curr) => {
+      const to = 'Currently, I support using the following currencies:\n' + cached.codes.sort().reduce((acc, curr) => {
         if(acc.length && acc[acc.length - 1].length <= 5*4) acc[acc.length - 1] = `${acc[acc.length - 1]}, ${curr}`
         else acc.push(curr)
 
         return acc
-      }, []).join('\n') + '</code>'
+      }, []).join('\n') + ''
 
       result.push([from, to, 'PM'])
     } catch (error) {
-      result.push(['money.js@listCodes', JSON.stringify(error), 'ERR'])
+      result.push(['money.js@listCodes', error.toString(), 'ERR'])
     }
   }
   
@@ -48,7 +53,7 @@ async function queryCurrency(text) {
         matches.push([from, to])
       }
     } catch (error) {
-      matches.push(['money.js@queryCurrency', JSON.stringify(error), 'ERR'])
+      matches.push(['money.js@queryCurrency', error.toString(), 'ERR'])
     }
   }
   
@@ -62,12 +67,27 @@ async function checkCodes(...codes) {
 }
 
 async function getRatio(curr) {
-  if (!cached[curr]) {
-    const url = `https://free.currconv.com/api/v7/convert?q=${curr}&compact=ultra&apiKey=${process.env.MONEY_KEY}`
-    cached[curr] = (await got(url, { json: true })).body[curr]
-  }
+  let LOG = `BEFORE REQUEST FOR ${curr}: ${JSON.stringify(cached[curr])}`
 
-  return cached[curr]
+  if (!cached[curr] || !cached[curr].when || cached[curr].when < new Date()) {
+    const url = `https://free.currconv.com/api/v7/convert?q=${curr}&compact=ultra&apiKey=${process.env.MONEY_KEY}`
+    const then = new Date()
+    then.setTime(then.getTime() + 30*60*1000)
+    
+    cached[curr] = {
+      ratio: JSON.parse((await got(url)).body)[curr],
+      when: then
+    }
+    
+    LOG = `${LOG}\nMADE REQUEST`
+  }
+  
+  LOG = `${LOG}\nAFTER REQUEST: ${JSON.stringify(cached[curr])}`
+
+  return {
+    ratio: cached[curr].ratio,
+    log: ['log', LOG, 'ERR']
+  }
 }
 
 const view = (from, to, value, ratio) => [`${value} ${from}`, `${(value*ratio).toFixed(2)} ${to}`]
@@ -84,12 +104,12 @@ async function convert(text) {
 
     try {
       if (await checkCodes(from, to)) {
-        const ratio = await getRatio(`${from}_${to}`)
+        const { ratio, log } = await getRatio(`${from}_${to}`)
 
-        matches.push(view(from, to, value, ratio))
+        matches.push(view(from, to, value, ratio), log)
       }
     } catch (error) {
-      matches.push(['money.js@convert', JSON.stringify(error), 'ERR'])
+      matches.push(['money.js@convert', error.toString(), 'ERR'])
     }
   }
 
@@ -103,8 +123,3 @@ async function parse(text) {
 }
 
 module.exports = parse
-module.exports.checkCodes = checkCodes
-module.exports.convert = convert
-module.exports.getRatio = getRatio
-module.exports.initCache = initCache
-module.exports.listCodes = listCodes

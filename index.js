@@ -6,7 +6,8 @@ const run = require('./src/run')
 const telegram = new Telegram(process.env.BOT_KEY)
 function reply(chat, message_id, text) {
   telegram.sendMessage(chat, text, {
-    reply_to_message_id: message_id
+    reply_to_message_id: message_id,
+    parse_mode: 'Markdown'
   })
 }
 
@@ -43,6 +44,7 @@ async function handler(request, response) {
     const values = await run(message)
     if (values.length !== 0) {
       const responses = values.map(getResponses(message)).filter(Boolean)
+
       reply(message.chat.id, message.message_id, responses.join('\n'))
     }
   }
