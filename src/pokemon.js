@@ -7,7 +7,7 @@ async function moves(text) {
   const matches = []
   let match
   while ((match = cmd.exec(text)) !== null) {
-    const name = match[1].trim()
+    const name = match[1].trim().replace(/\s/g, '-')
 
     const result = await Pokedex.getMoveByName(name)
     const {
@@ -38,7 +38,7 @@ async function abilities(text) {
   const matches = []
   let match
   while ((match = cmd.exec(text)) !== null) {
-    const name = match[1].trim()
+    const name = match[1].trim().replace(/\s/g, '-')
 
     const result = await Pokedex.getAbilityByName(name)
     const { short_effect } = result.effect_entries.find(entry => entry.language.name === 'en') || {}
