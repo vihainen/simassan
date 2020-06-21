@@ -1,6 +1,7 @@
 const money = require('./money')
 const picker = require('./picker')
 const diceroller = require('./diceroller')
+const pokemon = require('./pokemon')
 
 function parserRunner(text) {
   return async parser => {
@@ -15,7 +16,7 @@ function parserRunner(text) {
 
 async function run({ text }) {
   const runner = parserRunner(text)
-  const parsers = [money, picker, diceroller]
+  const parsers = [money, picker, diceroller, pokemon]
   const promisedResults = parsers.map(runner)
   const results = await Promise.all(promisedResults)
 
