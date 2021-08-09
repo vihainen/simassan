@@ -14,7 +14,7 @@ async function initCache() {
 }
 
 async function listCodes(text) {
-  const pattern = /\/list_?currencies/gi
+  const pattern = /^\/list_?currencies$/g
   const result = []
   let match
   if ((match = pattern.exec(text)) !== null) {
