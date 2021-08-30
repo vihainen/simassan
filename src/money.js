@@ -6,6 +6,7 @@ async function initCache() {
   const url = `https://free.currconv.com/api/v7/currencies?apiKey=${process.env.MONEY_KEY}`
   try {
     const { results } = JSON.parse((await got(url)).body)
+    console.log('==> uhh, ', results)
     cached.info = results
     cached.codes = Object.keys(cached.info)
   } catch (e) {
