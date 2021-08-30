@@ -6,12 +6,25 @@ async function initCache() {
   const url = `https://free.currconv.com/api/v7/currencies?apiKey=${process.env.MONEY_KEY}`
   try {
     const { results } = JSON.parse((await got(url)).body)
-    console.log('==> uhh, ', results)
     cached.info = results
     cached.codes = Object.keys(cached.info)
+    return true
   } catch (e) {
     console.log(e)
+    return false
   }
+}
+
+async function checkCache(response) {
+  if (!cached.codes) {
+    const hasUpdatedCache = await initCache()
+    if (!hasUpdatedCache)
+      response.push(['ERROR', 'Currency service is unavailable'])
+
+    return hasUpdatedCache
+  }
+
+  return true
 }
 
 async function listCodes(text) {
@@ -20,8 +33,9 @@ async function listCodes(text) {
   let match
   if ((match = pattern.exec(text)) !== null) {
     try {
-      if (!cached.codes) await initCache()
-    
+      const isCacheOk = await checkCache(result)
+      if (!isCacheOk) return result
+
       const from = match[0]
       const to = 'Currently, I support using the following currencies:\n' + cached.codes.sort().reduce((acc, curr) => {
         if(acc.length && acc[acc.length - 1].length <= 5*4) acc[acc.length - 1] = `${acc[acc.length - 1]}, ${curr}`
@@ -47,6 +61,9 @@ async function queryCurrency(text) {
   while((match = pattern.exec(text)) !== null) {
     const from = match[1].toUpperCase()
     try {
+      const isCacheOk = await checkCache(matches)
+      if (!isCacheOk) return matches
+
       if (await checkCodes(from)) {
         const info = cached.info[from]
         const to = `${info.currencyName}, ${info.currencySymbol||'symbol not found.'}`
@@ -62,7 +79,8 @@ async function queryCurrency(text) {
 }
 
 async function checkCodes(...codes) {
-  if (!cached.codes) await initCache()
+  const isCacheOk = await checkCache([])
+  if (!isCacheOk) return false
 
   return codes.every(code => cached.codes.includes(code))
 }
@@ -104,6 +122,9 @@ async function convert(text) {
     const to = (match[3] || default_to).toUpperCase()
 
     try {
+      const isCacheOk = await checkCache(matches)
+      if (!isCacheOk) return matches
+
       if (await checkCodes(from, to)) {
         const { ratio, log } = await getRatio(`${from}_${to}`)
 
