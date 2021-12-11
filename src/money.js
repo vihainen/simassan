@@ -105,7 +105,7 @@ async function getRatio(curr) {
 
   return {
     ratio: cached[curr].ratio,
-    log: ['log', LOG, 'ERR']
+    log: ['log', LOG, 'ADM']
   }
 }
 

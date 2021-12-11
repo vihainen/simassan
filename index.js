@@ -20,8 +20,12 @@ function sendPM(user, message_id, from, to) {
   return view(from, 'I have sent you the requested information in a private message.')
 }
 
+function sendAdmin(message) {
+  telegram.sendMessage(process.env.ADMIN_ID, message)
+}
+
 function sendError(data, error) {
-  telegram.sendMessage(process.env.ADMIN_ID, `Error!\n${view(data, error)}`)
+  sendAdmin(`Error!\n${view(data, error)}`)
 }
 
 function getResponses(message) {
@@ -29,6 +33,8 @@ function getResponses(message) {
     switch(type) {
       case 'PM':
         return sendPM(message.from.id, message.message_id, from, to)
+      case 'ADM':
+        return sendAdmin(view(from, to))
       case 'ERR':
         return sendError(from, to)
       case 'MSG':
