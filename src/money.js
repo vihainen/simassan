@@ -19,7 +19,7 @@ async function checkCache(response) {
   if (!cached.codes) {
     const hasUpdatedCache = await initCache()
     if (!hasUpdatedCache)
-      response.push(['ERROR', 'Currency service is unavailable'])
+      response.push(['ERROR', 'Currency service is unavailable', 'ERR'])
 
     return hasUpdatedCache
   }
