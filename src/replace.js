@@ -16,7 +16,9 @@ async function parse({ reply_to_message, text }) {
     let match
     if ((match = cmd.exec(text)) !== null) {
       const content = match[1].trim()
-      const [needle, hay, paramFlags] = content.split('/')
+      const [search, hay, paramFlags] = content.split('/')
+
+      const needle = `(${search})`
       const flags = parseFlags(paramFlags)
   
       const response = haystack.replace(RegExp(needle, flags), hay)
