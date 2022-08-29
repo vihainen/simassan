@@ -10,32 +10,41 @@ function buildHelper(pattern, response) {
   }
 }
 
-const money = buildHelper(/^\/money$/g, 'Inline. (value) CODE to CODE, eg "500 JPY to USD". The "to" part can be omitted to get the default BRL, eg "20 USD"')
+const moneyHelpText = 'Inline. (value) CODE to CODE, eg "500 JPY to USD". The "to" part can be omitted to get the default BRL, eg "20 USD"'
+const money = buildHelper(/^\/money$/g, moneyHelpText)
 
-const moneydef = buildHelper(/^\/moneydef$/g, 'Inline. def|CODE, eg def|USD.')
+const moneyDefHelpText = 'Inline. def|CODE, eg def|USD.'
+const moneydef = buildHelper(/^\/moneydef$/g, moneyDefHelpText)
 
-const roll = buildHelper(/^\/roll$/g, 'Inline. (roll NdS), eg: (roll 4d20). You can roll multiple dice with a single command and use some modifiers, eg: (roll 1d20 +4d10+5) will roll one d20 and sum the results of 4 d10 with a single +5 modifier. The default die is a fate dice')
+const listCurrenciesHelpText = 'Sends a private message showing supported currency CODEs.'
 
-const pick = buildHelper(/^\/pick$/g, 'Inline. (pick A B C). Encase an option with quotes if you want spaces, eg (pick one two "third option"). Can use modifiers, eg (pick 2"A" B C) will behave as if there were two "A" options.')
+const rollHelpText = 'Inline. (roll NdS), eg: (roll 4d20). You can roll multiple dice with a single command and use some modifiers, eg: (roll 1d20 +4d10+5) will roll one d20 and sum the results of 4 d10 with a single +5 modifier. The default die is a fate dice (-1, 0, +1)'
+const roll = buildHelper(/^\/roll$/g, rollHelpText)
 
-const pokemonMove = buildHelper(/^\/pokemon_?move$/g, 'WIP, inline. pokemon|move|NAME. Fetches some info about a pokemon move. You can omit letters, eg "pkmn|mv|hyper fang"')
+const pickHelpText = 'Inline. (pick A B C). Encase an option with quotes if you want spaces, eg (pick one two "third option"). Can use modifiers, eg (pick 2"A" B C) will behave as if there were two "A" options.'
+const pick = buildHelper(/^\/pick$/g, pickHelpText)
+
+const pokemonHelpText = 'WIP, inline. pokemon|move|NAME. Fetches some info about a pokemon move. You can omit letters, eg "pkmn|mv|hyper fang"'
+const pokemonMove = buildHelper(/^\/pokemon_?move$/g, pokemonHelpText)
 
 //basically the botfather /setcommands text, slightly edited
 const help = buildHelper(/^\/help$/g, `/help - Sends this very ugly message. Might (and should) make this look better in the future. I prolly won't.
 
-The following comands will return the message after the '-' if the command is specified to be "inline"; The actual command is in the description.
+The following comands are help commands. Those will just return a help message, the actual command they refer to is outlined in the message.
 
-/money - Inline. (value) CODE to CODE, eg "500 JPY to USD". The "to" part can be omitted to get the default BRL, eg "20 USD"
+/money - ${moneyHelpText}
 
-/moneydef - Inline. def|CODE, eg def|USD.
+/moneydef - ${moneyDefHelpText}
 
-/listcurrencies - Sends a private message showing supported currency CODEs.
+/roll - ${rollHelpText}
 
-/roll - Inline. (roll NdS), eg: (roll 4d20). You can roll multiple dice with a single command and use some modifiers, eg: (roll 1d20 +4d10+5) will roll one d20 and sum the results of 4 d10 with a single +5 modifier. The default die is a fate dice (-1, 0, +1)
+/pick - ${pickHelpText}
 
-/pick - Inline. (pick A B C). Encase an option with quotes if you want spaces, eg (pick one two "third option"). Can use modifiers, eg (pick 2"A" B C) will behave as if there were two "A" options.
+/pokemonmove - ${pokemonHelpText}
 
-/pokemonmove - WIP, inline. pokemon|move|NAME. Fetches some info about a pokemon move. You can omit letters, eg "pkmn|mv|hyper fang"`)
+The following commands are support/help commands
+
+/listcurrencies - ${listCurrenciesHelpText}`)
 
 async function parse({ text }) {
   const functions = [help, money, moneydef, roll, pick, pokemonMove]
