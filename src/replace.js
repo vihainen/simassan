@@ -11,12 +11,11 @@ async function parse({ reply_to_message, text }) {
   const haystack = reply_to_message?.text
 
   if (haystack) {
-    const cmd = /^\/s\/(.*\/.*)$/
+    const cmd = /^s([dgimsuy]*)(?<!\\)\|(.+?)(?<!\\)\|(.+)$/
   
     let match
     if ((match = cmd.exec(text)) !== null) {
-      const content = match[1].trim()
-      const [search, hay, paramFlags] = content.split('/')
+      const [, paramFlags, search, hay] = match
 
       const needle = `(${search})`
       const flags = parseFlags(paramFlags)
