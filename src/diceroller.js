@@ -1,71 +1,87 @@
-function getRoll(min, max) {
+function sumLine(line) {
+  const calcRegex = /[+-]?(\d+(\.\d+)?)/g
+  const calc = line.match(calcRegex) || [];
+  let total = 0
+
+  while (calc.length) {
+    total += parseFloat(calc.shift());
+  }
+
+  return `${total}`;
+}
+
+function getRoll(max, min = 1) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-function getOpText(result, op, rolls) {
-  return `*${result}* _${op}(${rolls})_`
-}
-
-function getRolledDices(op, n, min, max, mod) {
-  const dice = `d${(min != -1 || max != 1)? `${min != 1? `${min},` : ''}${max}` : ''}`
-  return `${op}${n}${dice}${mod? ` (${mod > 0? `+${mod}` : mod})` : ''}`
-}
-
-function getRolls(op, n, min, max, mod) {
-  const rolls = []
-  let i = n
-  while(i--) {
-    rolls.push(getRoll(min, max))
-  }
-  
-  let result = rolls.join(' ')
-  
-  let roll;
-  switch(op) {
-    case '+': roll = mod + rolls.reduce((sum, roll) => sum + roll); break
-    case '>': roll = mod + rolls.reduce((max, roll) => (roll > max)? roll : max); break
-    case '<': roll = mod + rolls.reduce((min, roll) => (roll < min)? roll : min, rolls[0]); break
-    case '~': roll = mod + Math.round(rolls.reduce((sum, roll) => sum + roll)/rolls.length); break
-    default: roll = rolls.map(roll => roll + mod).join(' ')
-  }
-
-  result = getOpText(roll, op, result)
-  
-  return [getRolledDices(op, n, min, max, mod), result]
-}
-
 async function parse({ text }) {
-  const cmd = /\(roll\s([^)]*)\)/gi
+  const cmd = /\(roll\s([^)]+)\)/gi
+  const dice = /(?:([+\-])?(?:(\d*)?([><]))?(\d*)?d(\d*)?)/gi
 
-  const matches = []
+  const results = []
   let match
   while ((match = cmd.exec(text)) !== null) {
-    const param = match[1].trim()
+    const queries = match[1].trim()
+
+    queries.split(' ').forEach(query => {
+      let rollLog = '';
+      const line = query.replace(dice, (...matches) => {
+        let [match, groupOp, limit, filterOp, nDice = 1, diceN] = matches
+        let rolls = []
+        let log = ''
+
+        let rolling = nDice
+        while (rolling--) {
+          const roll = diceN ? getRoll(diceN) : getRoll(1, -1)
+
+          rolls.push(roll)
+        }
+        rolls.sort((a, b) => a - b)
+
+        if (filterOp) {
+          const actualLimit = limit ? (limit > nDice ? nDice : limit) : 1
+
+          if (filterOp == '>') {
+            const divise = nDice - actualLimit
+            let discarded = rolls.slice(0, divise)
+            let kept = rolls.slice(divise, rolls.length)
+
+            log = `${discarded.join(' ')}${discarded.length && kept.length ? ' ' : ''}**${kept.join(' ')}**`
+            rolls = kept
+          } else {
+            let kept = rolls.slice(0, actualLimit)
+            let discarded = rolls.slice(actualLimit, rolls.length)
+
+            log = `**${kept.join(' ')}**${kept.length && discarded.length ? ' ' : ''}${discarded.join(' ')}`
+            rolls = kept
+          }
+        } else {
+          log = rolls.join(' ')
+        }
+
+        if (groupOp == '-' || nDice > 1) {
+          let result = 0
+          if (groupOp == '-') {
+            result = rolls.reduce((a, b) => a - b, 0)
+          } else {
+            result = rolls.reduce((a, b) => a + b, 0)
+          }
+
+          log += ` ↝ ${result}`
+          rolls = result
+        } else {
+          [rolls] = rolls
+        }
+
+        rollLog += `${rollLog ? '\n' : ''}[${match} ↝ ${log}]`
+        return rolls >= 0 ? `+${rolls}` : rolls
+      })
     
-    const pattern = /(?:([+><~]?)(\d*)d(?:(-?\d*),)?(\d*))([+-]\d*)?/gi
-    let opts = []
-    while ((match = pattern.exec(param)) !== null) {
-      const op = match[1]||''
-      const n = +match[2]||1
-      let max = +match[4]
-      const mod = +match[5]||0
-      
-      let min
-      if(match[3] === undefined) {
-        if(match[4] === '') [min, max] = [-1, 1]
-        else min = 1
-      } else min = +match[3]
-      
-      matches.push(getRolls(op, n, min, max, mod))
-    }
-    
-    match = ''
+      results.push([rollLog, sumLine(line)])
+    });
   }
 
-  return matches
+ return results
 }
 
 module.exports = parse
-
-
-

@@ -18,7 +18,7 @@ const moneydef = buildHelper(/^\/moneydef$/g, moneyDefHelpText)
 
 const listCurrenciesHelpText = 'Sends a private message showing supported currency CODEs.'
 
-const rollHelpText = 'Inline. (roll NdS), eg: (roll 4d20). You can roll multiple dice with a single command and use some modifiers, eg: (roll 1d20 +4d10+5) will roll one d20 and sum the results of 4 d10 with a single +5 modifier. The default die is a fate dice (-1, 0, +1)'
+const rollHelpText = 'Inline. (roll NdS), eg: (roll 4d20). You can roll multiple dice with a single command and use some modifiers, eg: (roll 1d20 +2d10-5+1d8) will roll a d20 and, separately, sum the results of two d10 with a single -5 modifier and the result of a d8. The default die is a fate dice (-1, 0, +1)'
 const roll = buildHelper(/^\/roll$/g, rollHelpText)
 
 const pickHelpText = 'Inline. (pick A B C). Encase an option with quotes if you want spaces, eg (pick one two "third option"). Can use modifiers, eg (pick 2"A" B C) will behave as if there were two "A" options.'
