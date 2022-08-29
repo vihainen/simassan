@@ -27,6 +27,9 @@ const pick = buildHelper(/^\/pick$/g, pickHelpText)
 const pokemonHelpText = 'WIP, inline. pokemon|move|NAME. Fetches some info about a pokemon move. You can omit letters, eg "pkmn|mv|hyper fang"'
 const pokemonMove = buildHelper(/^\/pokemon_?move$/g, pokemonHelpText)
 
+const replaceHelpText = 's|regex|replacement. Swaps "regex" with "replacement". Accepts regular expressions and flags, and does global replacing by default eg `si|(rabelo is).*|$1 the average human being`'
+const replace = buildHelper(/^\/replace$/g, replaceHelpText)
+
 //basically the botfather /setcommands text, slightly edited
 const help = buildHelper(/^\/help$/g, `/help - Sends this very ugly message. Might (and should) make this look better in the future. I prolly won't.
 
@@ -41,6 +44,8 @@ The following comands are help commands. Those will just return a help message, 
 /pick - ${pickHelpText}
 
 /pokemonmove - ${pokemonHelpText}
+
+/replace - ${replaceHelpText}
 
 The following commands are support/help commands
 
