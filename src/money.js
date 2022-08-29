@@ -138,7 +138,7 @@ async function convert(text) {
   return matches
 }
 
-async function parse(text) {
+async function parse({ text }) {
   const functions = [convert, listCodes, queryCurrency]
   const results = await Promise.all(functions.map(async f => await f(text)))
   return results.flat()

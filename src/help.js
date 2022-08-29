@@ -37,7 +37,7 @@ The following comands will return the message after the '-' if the command is sp
 
 /pokemonmove - WIP, inline. pokemon|move|NAME. Fetches some info about a pokemon move. You can omit letters, eg "pkmn|mv|hyper fang"`)
 
-async function parse(text) {
+async function parse({ text }) {
   const functions = [help, money, moneydef, roll, pick, pokemonMove]
   const results = await Promise.all(functions.map(async f => await f(text)))
   return results.flat()

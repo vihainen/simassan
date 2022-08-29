@@ -1,5 +1,5 @@
 
-async function parse(text) {
+async function parse({ text }) {
   const cmd = /\(pick\s([^)]*)\)/gi
 
   const matches = []

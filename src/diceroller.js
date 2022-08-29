@@ -34,7 +34,7 @@ function getRolls(op, n, min, max, mod) {
   return [getRolledDices(op, n, min, max, mod), result]
 }
 
-async function parse(text) {
+async function parse({ text }) {
   const cmd = /\(roll\s([^)]*)\)/gi
 
   const matches = []

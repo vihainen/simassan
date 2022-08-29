@@ -53,7 +53,7 @@ async function abilities(text) {
   return matches
 }
 
-async function parse(text) {
+async function parse({ text }) {
   const functions = [abilities, moves]
   const results = await Promise.all(functions.map(async f => await f(text)))
   return results.flat()
