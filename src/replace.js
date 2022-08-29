@@ -21,7 +21,7 @@ async function parse({ reply_to_message, text }) {
   
       const response = haystack.replace(RegExp(needle, flags), hay)
   
-      result.push(["did you mean", response])
+      result.push(["did you mean", response, 'REPLYREPLY'])
     }
   }
 

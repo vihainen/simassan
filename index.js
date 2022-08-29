@@ -33,6 +33,10 @@ function getResponses(message) {
     switch(type) {
       case 'PM':
         return sendPM(message.from.id, message.message_id, from, to)
+      case 'REPLYREPLY':
+        const replyMessage = message.reply_to_message?.message_id
+        if (replyMessage) reply(message.chat.id, replyMessage, view(from, to))
+        return false
       case 'ADM':
         return sendAdmin(view(from, to))
       case 'ERR':
