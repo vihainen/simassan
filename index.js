@@ -64,8 +64,9 @@ function sendMarkdownMessage(chat, message_id, text) {
 async function handler(request, response) {
   const { message } = await json(request)
 
-  if (message && message.text) {
+  if (message) {
     const values = await run(message)
+
     if (values.length !== 0) {
       const responses = values.map(getResponses(message)).filter(Boolean)
 

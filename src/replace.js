@@ -8,6 +8,8 @@ function parseFlags(params = '') {
 
 async function parse({ reply_to_message, text }) {
   const result = []
+  if (!text) return result
+
   const haystack = reply_to_message?.text
 
   if (haystack) {

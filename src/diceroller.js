@@ -19,6 +19,8 @@ async function parse({ text }) {
   const dice = /(?:([+\-])?(?:(\d*)?([><]))?(\d*)?d(\d*)?)/gi
 
   const results = []
+  if (!text) return results
+
   let match
   while ((match = cmd.exec(text)) !== null) {
     const queries = match[1].trim()

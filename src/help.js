@@ -52,6 +52,8 @@ The following commands are support/help commands
 /listcurrencies - ${listCurrenciesHelpText}`)
 
 async function parse({ text }) {
+  if (!text) return []
+
   const functions = [help, money, moneydef, roll, pick, pokemonMove]
   const results = await Promise.all(functions.map(async f => await f(text)))
   return results.flat()

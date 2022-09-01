@@ -2,7 +2,9 @@
 async function parse({ text }) {
   const cmd = /\(pick\s([^)]*)\)/gi
 
-  const matches = []
+  const results = []
+  if (!text) return results
+
   let match
   while ((match = cmd.exec(text)) !== null) {
     const param = match[1].trim()
@@ -16,12 +18,12 @@ async function parse({ text }) {
     }
     const pick = (Math.floor(Math.random()*max) + 1)
     
-    matches.push(['pick', opts.find(opt => opt[0] >= pick)[1]])
+    results.push(['pick', opts.find(opt => opt[0] >= pick)[1]])
     
     match = ''
   }
 
-  return matches
+  return results
 }
 
 module.exports = parse
