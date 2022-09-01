@@ -42,6 +42,9 @@ function getResponses(message) {
       case 'ADM':
         sendToAdmin(view(from, to))
         break;
+      case 'STICKER':
+        telegram.sendSticker(message.chat.id, to)
+        break;
       case 'ERR':
         sendError(from, to)
         break;
