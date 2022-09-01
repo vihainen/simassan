@@ -69,7 +69,8 @@ async function handler(request, response) {
     if (values.length !== 0) {
       const responses = values.map(getResponses(message)).filter(Boolean)
 
-      sendMarkdownMessage(message.chat.id, message.message_id, responses.join('\n'))
+      if (responses.length)
+        sendMarkdownMessage(message.chat.id, message.message_id, responses.join('\n'))
     }
   }
 
