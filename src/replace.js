@@ -11,7 +11,7 @@ async function parse({ reply_to_message, text }) {
   const haystack = reply_to_message?.text
 
   if (haystack) {
-    const cmd = /^s([dgimsuy]*)(?<!\\)\|(.+?)(?<!\\)\|(.+)$/
+    const cmd = /^s([dgimsuy]*)(?<!\\)\|(.+?)(?<!\\)\|(.*)$/
   
     let match
     if ((match = cmd.exec(text)) !== null) {
