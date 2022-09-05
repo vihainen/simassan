@@ -1,5 +1,8 @@
 const got = require('got')
-const default_to = 'brl'
+
+const DEFAULT_TARGET = 'BRL'
+const DEFAULT_TARGET_BRL = 'USD'
+const getDefaultTarget = (from) => from.toUpperCase() === DEFAULT_TARGET ? DEFAULT_TARGET_BRL : DEFAULT_TARGET;
 
 let cached = {}
 async function initCache() {
@@ -119,7 +122,7 @@ async function convert(text) {
   while ((match = pattern.exec(text)) !== null) {
     const value = +match[1]
     const from = match[2].toUpperCase()
-    const to = (match[3] || default_to).toUpperCase()
+    const to = (match[3] || getDefaultTarget(from)).toUpperCase()
 
     try {
       const isCacheOk = await checkCache(matches)
