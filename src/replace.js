@@ -19,7 +19,7 @@ async function parse({ reply_to_message, text }) {
     if ((match = cmd.exec(text)) !== null) {
       const [, paramFlags, search, hay] = match
 
-      const needle = `(${search})`
+      const needle = `(?:${search})`
       const flags = parseFlags(paramFlags)
   
       const response = haystack.replace(RegExp(needle, flags), hay)
